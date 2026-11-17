@@ -4,6 +4,8 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![Base model](https://img.shields.io/badge/base-Qwen2.5--Coder--1.5B-orange.svg)
 ![Method](https://img.shields.io/badge/method-QLoRA-green.svg)
+[![Model on HF](https://img.shields.io/badge/%F0%9F%A4%97%20Model-qwen2.5--coder--1.5b--xss-ffcc4d.svg)](https://huggingface.co/hareramray325/qwen2.5-coder-1.5b-xss)
+[![Dataset on HF](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-xss--detection--bench-ffcc4d.svg)](https://huggingface.co/datasets/hareramray325/xss-detection-bench)
 
 > **⚠️ For education and authorized security testing only.** This project generates
 > proof-of-concept XSS payloads to train a vulnerability *detector*. Use it only on
@@ -19,9 +21,11 @@ The report format and the grounding checker live in [`xssft/schema.py`](xssft/sc
 every line of input is numbered, and every cited `(file, line, code)` in a report must
 exist in the input, so answers can be verified mechanically.
 
-> **Model weights are not in this repo.** The `.safetensors` adapters and checkpoints
-> (~800 MB) are gitignored; rebuild them with the scripts below. All results are
-> reproducible on a single 8 GB GPU.
+> **Model weights are not in this repo.** The trained adapter is on Hugging Face at
+> [hareramray325/qwen2.5-coder-1.5b-xss](https://huggingface.co/hareramray325/qwen2.5-coder-1.5b-xss)
+> and the benchmark data at
+> [hareramray325/xss-detection-bench](https://huggingface.co/datasets/hareramray325/xss-detection-bench).
+> You can also rebuild everything with the scripts below on a single 8 GB GPU.
 
 ## Quickstart
 
@@ -61,6 +65,9 @@ bash run_ood.sh --adapter runs/xss-qlora-1.5b-chat   # generalization check on u
 
 # Compare against the un-tuned base model
 .venv/Scripts/python -m xssft.chat --base
+
+# No local training needed: load the published adapter straight from Hugging Face
+.venv/Scripts/python -m xssft.chat --adapter hareramray325/qwen2.5-coder-1.5b-xss demo/views.py
 ```
 
 ## Results
