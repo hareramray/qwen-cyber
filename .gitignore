@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Model weights, checkpoints, eval logs — all reproducible via the run_*.sh
+# scripts, and far too large for Git. See README for how to regenerate.
+runs/
+
+# Derived datasets (regenerate: `python -m xssft.gen.chat`, then the cat/shuf in
+# run_chat_train.sh). The canonical data/ and hand-written data_ood/ are kept.
+data_chat/
+data_mixed/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp

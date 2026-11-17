@@ -1,0 +1,4 @@
+# Normalize line endings to LF in the repo (keeps bash scripts runnable).
+* text=auto eol=lf
+*.sh text eol=lf
+*.jsonl text eol=lf

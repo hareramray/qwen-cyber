@@ -1,0 +1,8 @@
+# Fine-tuning stack for xssft. torch is assumed already installed (CUDA build).
+transformers>=4.44
+datasets>=2.20
+accelerate>=0.33
+peft>=0.12
+trl>=0.9
+# 4-bit QLoRA. On Windows use a recent bitsandbytes with native CUDA support.
+bitsandbytes>=0.43
