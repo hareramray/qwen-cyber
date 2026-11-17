@@ -1,5 +1,15 @@
 # xssft — fine-tuning Qwen2.5-Coder-1.5B into an XSS analyst
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![Base model](https://img.shields.io/badge/base-Qwen2.5--Coder--1.5B-orange.svg)
+![Method](https://img.shields.io/badge/method-QLoRA-green.svg)
+
+> **⚠️ For education and authorized security testing only.** This project generates
+> proof-of-concept XSS payloads to train a vulnerability *detector*. Use it only on
+> systems you own or are explicitly authorized to test. The authors accept no liability
+> for misuse; see [LICENSE](LICENSE).
+
 Trains Qwen2.5-Coder-1.5B-Instruct to find cross-site scripting in **Vue**, **Django**
 and **Spring Boot (Java)** code and emit a grounded JSON report (sources, sinks,
 data-flow path, output context, severity, fix, PoC). An optional second stage mixes in
@@ -139,3 +149,17 @@ gradient checkpointing, 8-bit AdamW, batch 1 × grad-accum 16, seq len 2048. Low
 model uses ~1–2 GB in 4-bit (~3 GB in bf16), so on 8 GB you can also train with
 `--no-4bit` (plain LoRA, no quantization error). To go back to the 7B model, pass
 `--model Qwen/Qwen2.5-Coder-7B-Instruct`.
+
+## Disclaimer
+
+This is a research and educational project. The synthetic data and the model it
+produces include proof-of-concept XSS payloads whose sole purpose is to train and
+evaluate a vulnerability detector. **Only run payloads against applications you own or
+have written authorization to test.** The model is a small (1.5B) assistant: it misses
+vulnerabilities and raises false positives (see the out-of-distribution results above),
+so treat its output as a first pass to be verified by a human, not as an authoritative
+security audit.
+
+## License
+
+[MIT](LICENSE) © 2026 Hareram Ray
