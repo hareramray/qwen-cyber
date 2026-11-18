@@ -78,18 +78,26 @@ flagged — lower is better), `sink_line`/`type_acc`/`context_acc` (localization
 on true positives).
 
 **Held-out test set (593 examples).** The base model flags almost everything as
-vulnerable; the fine-tune fixes both format and discrimination:
+vulnerable; the fine-tune fixes both format and discrimination. `scan-only` is
+`xss-qlora-1.5b`; `chat/mix` is the warm-started `xss-qlora-1.5b-chat`:
 
-| Metric | base | fine-tuned |
-|--------|------|-----------|
-| json_valid | 65.3% | **100%** |
-| grounded | 13.7% | **99.3%** |
-| detect_acc | 43.0% | **100%** |
-| recall | 97.5% | **100%** |
-| fp_rate | 87.5% | **0%** |
+| Metric | base | scan-only | chat/mix |
+|--------|------|-----------|----------|
+| json_valid | 65.3% | **100%** | **100%** |
+| grounded | 13.7% | 99.3% | **100%** |
+| detect_acc | 43.0% | **100%** | 86.0% |
+| recall | 97.5% | **100%** | 87.0% |
+| fp_rate | 87.5% | **0%** | 15.8% |
 
 ⚠️ The test set shares its 20 templates with training, so 100% here reflects **learning
 those templates**, not general XSS reasoning. The honest measure is the OOD set below.
+
+The chat/mix stage **regressed** on this set. All 83 of its errors come from three
+templates it now gets almost entirely wrong: it misses `:href` (`vue_href_url`, 25/25)
+and `v-html` (`vue_vhtml_route`, 24/24) fed from `route.query`, and it flags safe
+autoescaped Django `{{ var }}` (`dj_safe_autoescape`, 34/41). The other 17 templates
+stay at 100%. These templates appear in the mix as often as in stage-1 training, so
+this looks like the chat Q&A interfering with learned patterns, not missing data.
 
 **Out-of-distribution set (36 hand-written examples, patterns absent from the
 generator** — see [`xssft/gen/ood.py`](xssft/gen/ood.py)**).** `scan-only` is
@@ -106,8 +114,10 @@ generator** — see [`xssft/gen/ood.py`](xssft/gen/ood.py)**).** `scan-only` is
 
 Fine-tuning generalizes only partially: detection and grounding improve markedly, but a
 ~50% false-positive rate and missed vuln patterns remain — the ceiling of a 1.5B model
-trained on templated data. Adding the chat mix did **not** regress scanning (it slightly
-helped). With only 36 examples, treat small shifts as noise.
+trained on templated data. On these unseen patterns the chat mix scored slightly higher
+than scan-only, but on the 593-example set it lost three templates (see above), so
+adding chat data had a real cost for scanning. With only 36 examples, treat small OOD
+shifts as noise.
 
 ## Synthetic data
 
